@@ -52,14 +52,14 @@
   <body>
     <div id="app">
       <div class="container">
-        <section class="row">
+        <section class="row mt-4">
           <div class="col-sm-12 col-md-5 healthbars">
             <h2 class="mt-2 text-center">Health Bar</h2>
 
             <div class="healthbar">
               <h3 class="text-center">You</h3>
               <span class="badge badge-pill badge-success"
-                >{{playerHealth}}</span
+                >{{ playerHealth }}</span
               >
               <div class="progress">
                 <div
@@ -97,7 +97,7 @@
             <div class="controls">
               <button
                 v-if="!gameIsRunning"
-                class="btn btn-success btn-block"
+                class="btn btn-success btn-block mt-4"
                 @click="onStartGame"
               >
                 Start Game
