@@ -58,7 +58,9 @@
 
             <div class="healthbar">
               <h3 class="text-center">You</h3>
-              <span class="badge badge-pill badge-success">75</span>
+              <span class="badge badge-pill badge-success"
+                >{{playerHealth}}</span
+              >
               <div class="progress">
                 <div
                   class="progress-bar progress-bar-striped progress-bar-animated bg-success"
@@ -66,14 +68,16 @@
                   aria-valuenow="75"
                   aria-valuemin="0"
                   aria-valuemax="100"
-                  style="width: 75%;"
+                  :style="{width: playerHealth + '%'}"
                 ></div>
               </div>
             </div>
 
             <div class="healthbar">
               <h3 class="text-center">Monster</h3>
-              <span class="badge badge-pill badge-danger">75</span>
+              <span class="badge badge-pill badge-danger"
+                >{{ monsterHealth }}</span
+              >
               <div class="progress">
                 <div
                   class="progress-bar progress-bar-striped progress-bar-animated bg-danger"
@@ -81,7 +85,7 @@
                   aria-valuenow="75"
                   aria-valuemin="0"
                   aria-valuemax="100"
-                  style="width: 75%;"
+                  :style="{width: monsterHealth + '%'}"
                 ></div>
               </div>
             </div>
@@ -91,13 +95,21 @@
             <h2 class="mt-2 text-center">Control Bar</h2>
 
             <div class="controls">
-              <button class="btn btn-success btn-block">Start Game</button>
+              <button
+                v-if="!gameIsRunning"
+                class="btn btn-success btn-block"
+                @click="onStartGame"
+              >
+                Start Game
+              </button>
 
-              <div class="text-center">
+              <div v-else class="text-center">
                 <button class="btn btn-warning btn-lg">ATTACK</button>
                 <button class="btn btn-danger btn-lg">SPECIAL ATTACK</button>
                 <button class="btn btn-success btn-lg">HEAL</button>
-                <button class="btn btn-outline-danger btn-lg">GIVE UP</button>
+                <button class="btn btn-outline-secondary btn-lg">
+                  GIVE UP
+                </button>
               </div>
             </div>
           </div>
@@ -109,9 +121,17 @@
       new Vue({
         el: '#app',
         data: {
-          title: 'Hello from vue',
+          gameIsRunning: false,
+          playerHealth: 100,
+          monsterHealth: 100,
         },
-        methods: {},
+        methods: {
+          onStartGame: function () {
+            this.gameIsRunning = true;
+            this.playerHealth = 100;
+            this.monsterHealth = 100;
+          },
+        },
       });
     </script>
   </body>
