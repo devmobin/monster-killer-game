@@ -125,7 +125,10 @@
                 >
                   HEAL
                 </button>
-                <button class="btn btn-outline-secondary btn-lg">
+                <button
+                  @click="onGiveUp"
+                  class="btn btn-outline-secondary btn-lg"
+                >
                   GIVE UP
                 </button>
               </div>
@@ -198,6 +201,9 @@
             this.playerHealTimeout = 40;
             this.startPlayerHealCounter();
           },
+          onGiveUp: function () {
+            this.resetGame();
+          },
           startMonsterAttacks: function () {
             this.monsterAttackCounter = setInterval(() => {
               this.monsterAttackTimeout--;
@@ -216,7 +222,7 @@
               alert(`${this.turnWinner} won!!!`);
             }
           },
-          startPlayerAttacks: function () {            
+          startPlayerAttacks: function () {
             this.playerAttackCounter = setInterval(() => {
               this.playerAttackTimeout--;
 
@@ -262,6 +268,7 @@
           resetGame: function () {
             clearInterval(this.playerAttackCounter);
             clearInterval(this.playerSpecialAttackCounter);
+            clearInterval(this.playerHealCounter);
             clearInterval(this.monsterAttackCounter);
 
             this.gameIsRunning = false;
