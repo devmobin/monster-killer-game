@@ -126,6 +126,7 @@
           monsterHealth: 100,
           playerAttackTimeout: 4,
           monsterAttackTimeout: 5,
+          turnWinner: '',
         },
         methods: {
           onStartGame: function () {
@@ -135,20 +136,45 @@
             this.startMonsterAttacks();
           },
           startMonsterAttacks: function () {
-            setInterval(() => {
+            const counter = setInterval(() => {
               this.monsterAttackTimeout--;
+
               if (this.monsterAttackTimeout === 0) {
-                this.monsterAttack();
+                this.monsterAttack(counter);
                 this.monsterAttackTimeout = 5;
               }
             }, 1000);
           },
-          monsterAttack: function () {
+          monsterAttack: function (counter) {
             const damage = this.calculateDamage(5, 10);
             this.playerHealth -= damage;
+
+            if (this.checkWinner()) {
+              alert(`${this.turnWinner} won!!!`);
+              clearInterval(counter);
+            }
           },
           calculateDamage: function (min, max) {
             return Math.max(Math.floor(Math.random() * max) + 1, min);
+          },
+          checkWinner: function () {
+            if (this.monsterHealth <= 0) {
+              this.turnWinner = 'player';
+              this.resetGame();
+              return true;
+            } else if (this.playerHealth <= 0) {
+              this.turnWinner = 'monster';
+              this.resetGame();
+              return true;
+            }
+            return false;
+          },
+          resetGame: function () {
+            this.gameIsRunning = false;
+            this.playerHealth = 100;
+            this.monsterHealth = 100;
+            this.playerAttackTimeout = 4;
+            this.monsterAttackTimeout = 5;
           },
         },
       });
