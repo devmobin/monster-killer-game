@@ -104,7 +104,13 @@
               </button>
 
               <div v-else class="text-center">
-                <button class="btn btn-warning btn-lg">ATTACK</button>
+                <button
+                  :disabled="!playerCanAttack"
+                  @click="onPlayerAttack"
+                  class="btn btn-warning btn-lg"
+                >
+                  ATTACK
+                </button>
                 <button class="btn btn-danger btn-lg">SPECIAL ATTACK</button>
                 <button class="btn btn-success btn-lg">HEAL</button>
                 <button class="btn btn-outline-secondary btn-lg">
@@ -128,12 +134,28 @@
           monsterAttackTimeout: 5,
           turnWinner: '',
         },
+        computed: {
+          playerCanAttack: function () {
+            return this.playerAttackTimeout === 0 ? true : false;
+          },
+        },
         methods: {
           onStartGame: function () {
             this.gameIsRunning = true;
             this.playerHealth = 100;
             this.monsterHealth = 100;
             this.startMonsterAttacks();
+            this.startPlayerAttacksCounter();
+          },
+          onPlayerAttack: function () {
+            const damage = this.calculateDamage(3, 7);
+            this.monsterHealth -= damage;
+            this.playerAttackTimeout = 4;
+            this.startPlayerAttacksCounter();
+
+            if (this.checkWinner()) {
+              alert(`${this.turnWinner} won!!!`);
+            }
           },
           startMonsterAttacks: function () {
             const counter = setInterval(() => {
@@ -153,6 +175,14 @@
               alert(`${this.turnWinner} won!!!`);
               clearInterval(counter);
             }
+          },
+          startPlayerAttacksCounter: function () {
+            const counter = setInterval(() => {
+              this.playerAttackTimeout--;
+              if (this.playerAttackTimeout === 0) {
+                clearInterval(counter);
+              }
+            }, 1000);
           },
           calculateDamage: function (min, max) {
             return Math.max(Math.floor(Math.random() * max) + 1, min);
