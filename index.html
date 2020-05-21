@@ -124,12 +124,31 @@
           gameIsRunning: false,
           playerHealth: 100,
           monsterHealth: 100,
+          playerAttackTimeout: 4,
+          monsterAttackTimeout: 5,
         },
         methods: {
           onStartGame: function () {
             this.gameIsRunning = true;
             this.playerHealth = 100;
             this.monsterHealth = 100;
+            this.startMonsterAttacks();
+          },
+          startMonsterAttacks: function () {
+            setInterval(() => {
+              this.monsterAttackTimeout--;
+              if (this.monsterAttackTimeout === 0) {
+                this.monsterAttack();
+                this.monsterAttackTimeout = 5;
+              }
+            }, 1000);
+          },
+          monsterAttack: function () {
+            const damage = this.calculateDamage(5, 10);
+            this.playerHealth -= damage;
+          },
+          calculateDamage: function (min, max) {
+            return Math.max(Math.floor(Math.random() * max) + 1, min);
           },
         },
       });
