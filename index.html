@@ -118,7 +118,13 @@
                 >
                   SPECIAL ATTACK
                 </button>
-                <button class="btn btn-success btn-lg">HEAL</button>
+                <button
+                  :disabled="!playerCanHeal"
+                  @click="onPlayerHeal"
+                  class="btn btn-success btn-lg"
+                >
+                  HEAL
+                </button>
                 <button class="btn btn-outline-secondary btn-lg">
                   GIVE UP
                 </button>
@@ -140,6 +146,8 @@
           playerAttackCounter: null,
           playerSpecialAttackTimeout: 20,
           playerSpecialAttackCounter: null,
+          playerHealTimeout: 40,
+          playerHealCounter: null,
           monsterAttackTimeout: 5,
           monsterAttackCounter: null,
           turnWinner: '',
@@ -151,15 +159,18 @@
           playerCanSpecialAttack: function () {
             return this.playerSpecialAttackTimeout === 0 ? true : false;
           },
+          playerCanHeal: function () {
+            return this.playerHealTimeout === 0 ? true : false;
+          },
         },
         methods: {
           onStartGame: function () {
+            this.resetGame();
             this.gameIsRunning = true;
-            this.playerHealth = 100;
-            this.monsterHealth = 100;
             this.startMonsterAttacks();
             this.startPlayerAttacks();
             this.startPlayerSpecialAttacks();
+            this.startPlayerHealCounter();
           },
           onPlayerAttack: function () {
             const damage = this.calculateAmount(3, 7);
@@ -181,6 +192,12 @@
               alert(`${this.turnWinner} won!!!`);
             }
           },
+          onPlayerHeal: function () {
+            const heal = this.calculateAmount(30, 40);
+            this.playerHealth += heal;
+            this.playerHealTimeout = 40;
+            this.startPlayerHealCounter();
+          },
           startMonsterAttacks: function () {
             this.monsterAttackCounter = setInterval(() => {
               this.monsterAttackTimeout--;
@@ -199,7 +216,7 @@
               alert(`${this.turnWinner} won!!!`);
             }
           },
-          startPlayerAttacks: function () {
+          startPlayerAttacks: function () {            
             this.playerAttackCounter = setInterval(() => {
               this.playerAttackTimeout--;
 
@@ -214,6 +231,15 @@
 
               if (this.playerSpecialAttackTimeout === 0) {
                 clearInterval(this.playerSpecialAttackCounter);
+              }
+            }, 1000);
+          },
+          startPlayerHealCounter: function () {
+            this.playerHealCounter = setInterval(() => {
+              this.playerHealTimeout--;
+
+              if (this.playerHealTimeout === 0) {
+                clearInterval(this.playerHealCounter);
               }
             }, 1000);
           },
@@ -242,6 +268,7 @@
             this.playerHealth = 100;
             this.monsterHealth = 100;
             this.playerAttackTimeout = 4;
+            this.playerSpecialAttackTimeout = 20;
             this.monsterAttackTimeout = 5;
           },
         },
