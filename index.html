@@ -102,6 +102,12 @@
       .hit {
         background-color: rgb(255, 101, 101);
       }
+      .alert {
+        width: 45%;
+        height: 80px;
+        font-size: 16px;
+        display: inline-block;
+      }
     </style>
   </head>
   <body>
@@ -109,7 +115,15 @@
       <div class="container">
         <section class="row mt-4">
           <div class="col-sm-12 col-md-5 healthbars">
-            <h2 class="mt-2 text-center">Health Bar</h2>
+            <h2 v-if="!gameIsRunning" class="mt-2 text-center">Health Bar</h2>
+            <h2 v-else class="mt-2 text-center">
+              <div class="alert alert-success" role="alert">
+                You damaged: <strong>{{ player.lastDamage }}</strong>
+              </div>
+              <div class="alert alert-danger" role="alert">
+                Monster damaged: <strong>{{ monster.lastDamage }}</strong>
+              </div>
+            </h2>
 
             <div ref="playerElement" class="healthbar shadow-sm">
               <h3 class="text-center">
@@ -232,11 +246,13 @@
             specialAttackCounter: null,
             healTimeout: 40,
             healCounter: null,
+            lastDamage: 0,
           },
           monster: {
             health: 100,
             attackTimeout: 5,
             attackCounter: null,
+            lastDamage: 0,
           },
           turnWinner: '',
         },
@@ -263,6 +279,7 @@
           onPlayerAttack: function () {
             const damage = this.calculateAmount(3, 7);
             this.monster.health -= damage;
+            this.player.lastDamage = damage;
             this.player.attackTimeout = this.defaults.playerAttackTimeout;
             this.startPlayerAttacks();
             this.hit(this.$refs.monsterElement);
@@ -274,6 +291,7 @@
           onPlayerSpecialAttack: function () {
             const damage = this.calculateAmount(10, 20);
             this.monster.health -= damage;
+            this.player.lastDamage = damage;
             this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
             this.startPlayerSpecialAttacks();
             this.hit(this.$refs.monsterElement);
@@ -304,6 +322,7 @@
           monsterAttack: function () {
             const damage = this.calculateAmount(5, 10);
             this.player.health -= damage;
+            this.monster.lastDamage = damage;
             this.hit(this.$refs.playerElement);
 
             if (this.checkWinner()) {
