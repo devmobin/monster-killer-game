@@ -59,7 +59,7 @@
             <div class="healthbar">
               <h3 class="text-center">You</h3>
               <span class="badge badge-pill badge-success"
-                >{{ playerHealth }}</span
+                >{{ player.health }}</span
               >
               <div class="progress">
                 <div
@@ -68,7 +68,7 @@
                   aria-valuenow="75"
                   aria-valuemin="0"
                   aria-valuemax="100"
-                  :style="{width: playerHealth + '%'}"
+                  :style="{width: player.health + '%'}"
                 ></div>
               </div>
             </div>
@@ -76,7 +76,7 @@
             <div class="healthbar">
               <h3 class="text-center">Monster</h3>
               <span class="badge badge-pill badge-danger"
-                >{{ monsterHealth }}</span
+                >{{ monster.health }}</span
               >
               <div class="progress">
                 <div
@@ -85,7 +85,7 @@
                   aria-valuenow="75"
                   aria-valuemin="0"
                   aria-valuemax="100"
-                  :style="{width: monsterHealth + '%'}"
+                  :style="{width: monster.health + '%'}"
                 ></div>
               </div>
             </div>
@@ -143,27 +143,37 @@
         el: '#app',
         data: {
           gameIsRunning: false,
-          playerHealth: 100,
-          monsterHealth: 100,
-          playerAttackTimeout: 4,
-          playerAttackCounter: null,
-          playerSpecialAttackTimeout: 20,
-          playerSpecialAttackCounter: null,
-          playerHealTimeout: 40,
-          playerHealCounter: null,
-          monsterAttackTimeout: 5,
-          monsterAttackCounter: null,
+          defaults: {
+            playerAttackTimeout: 4,
+            playerSpecialAttackTimeout: 20,
+            playerHealTimeout: 40,
+            monsterAttackTimeout: 5,
+          },
+          player: {
+            health: 100,
+            attackTimeout: 4,
+            attackCounter: null,
+            specialAttackTimeout: 20,
+            specialAttackCounter: null,
+            healTimeout: 40,
+            healCounter: null,
+          },
+          monster: {
+            health: 100,
+            attackTimeout: 5,
+            attackCounter: null,
+          },
           turnWinner: '',
         },
         computed: {
           playerCanAttack: function () {
-            return this.playerAttackTimeout === 0 ? true : false;
+            return this.player.attackTimeout === 0 ? true : false;
           },
           playerCanSpecialAttack: function () {
-            return this.playerSpecialAttackTimeout === 0 ? true : false;
+            return this.player.specialAttackTimeout === 0 ? true : false;
           },
           playerCanHeal: function () {
-            return this.playerHealTimeout === 0 ? true : false;
+            return this.player.healTimeout === 0 ? true : false;
           },
         },
         methods: {
@@ -177,8 +187,8 @@
           },
           onPlayerAttack: function () {
             const damage = this.calculateAmount(3, 7);
-            this.monsterHealth -= damage;
-            this.playerAttackTimeout = 4;
+            this.monster.health -= damage;
+            this.player.attackTimeout = this.defaults.playerAttackTimeout;
             this.startPlayerAttacks();
 
             if (this.checkWinner()) {
@@ -187,8 +197,8 @@
           },
           onPlayerSpecialAttack: function () {
             const damage = this.calculateAmount(10, 20);
-            this.monsterHealth -= damage;
-            this.playerSpecialAttackTimeout = 20;
+            this.monster.health -= damage;
+            this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
             this.startPlayerSpecialAttacks();
 
             if (this.checkWinner()) {
@@ -197,55 +207,55 @@
           },
           onPlayerHeal: function () {
             const heal = this.calculateAmount(30, 40);
-            this.playerHealth += heal;
-            this.playerHealTimeout = 40;
+            this.player.health += heal;
+            this.player.healTimeout = this.defaults.playerHealTimeout;
             this.startPlayerHealCounter();
           },
           onGiveUp: function () {
             this.resetGame();
           },
           startMonsterAttacks: function () {
-            this.monsterAttackCounter = setInterval(() => {
-              this.monsterAttackTimeout--;
+            this.monster.attackCounter = setInterval(() => {
+              this.monster.attackTimeout--;
 
-              if (this.monsterAttackTimeout === 0) {
+              if (this.monster.attackTimeout === 0) {
                 this.monsterAttack();
-                this.monsterAttackTimeout = 5;
+                this.monster.attackTimeout = this.defaults.monsterAttackTimeout;
               }
             }, 1000);
           },
           monsterAttack: function () {
             const damage = this.calculateAmount(5, 10);
-            this.playerHealth -= damage;
+            this.player.health -= damage;
 
             if (this.checkWinner()) {
               alert(`${this.turnWinner} won!!!`);
             }
           },
           startPlayerAttacks: function () {
-            this.playerAttackCounter = setInterval(() => {
-              this.playerAttackTimeout--;
+            this.player.attackCounter = setInterval(() => {
+              this.player.attackTimeout--;
 
-              if (this.playerAttackTimeout === 0) {
-                clearInterval(this.playerAttackCounter);
+              if (this.player.attackTimeout === 0) {
+                clearInterval(this.player.attackCounter);
               }
             }, 1000);
           },
           startPlayerSpecialAttacks: function () {
-            this.playerSpecialAttackCounter = setInterval(() => {
-              this.playerSpecialAttackTimeout--;
+            this.player.specialAttackCounter = setInterval(() => {
+              this.player.specialAttackTimeout--;
 
-              if (this.playerSpecialAttackTimeout === 0) {
-                clearInterval(this.playerSpecialAttackCounter);
+              if (this.player.specialAttackTimeout === 0) {
+                clearInterval(this.player.specialAttackCounter);
               }
             }, 1000);
           },
           startPlayerHealCounter: function () {
-            this.playerHealCounter = setInterval(() => {
-              this.playerHealTimeout--;
+            this.player.healCounter = setInterval(() => {
+              this.player.healTimeout--;
 
-              if (this.playerHealTimeout === 0) {
-                clearInterval(this.playerHealCounter);
+              if (this.player.healTimeout === 0) {
+                clearInterval(this.player.healCounter);
               }
             }, 1000);
           },
@@ -253,11 +263,11 @@
             return Math.max(Math.floor(Math.random() * max) + 1, min);
           },
           checkWinner: function () {
-            if (this.monsterHealth <= 0) {
+            if (this.monster.health <= 0) {
               this.turnWinner = 'player';
               this.resetGame();
               return true;
-            } else if (this.playerHealth <= 0) {
+            } else if (this.player.health <= 0) {
               this.turnWinner = 'monster';
               this.resetGame();
               return true;
@@ -266,17 +276,17 @@
             return false;
           },
           resetGame: function () {
-            clearInterval(this.playerAttackCounter);
-            clearInterval(this.playerSpecialAttackCounter);
-            clearInterval(this.playerHealCounter);
-            clearInterval(this.monsterAttackCounter);
+            clearInterval(this.player.attackCounter);
+            clearInterval(this.player.specialAttackCounter);
+            clearInterval(this.player.healCounter);
+            clearInterval(this.monster.attackCounter);
 
             this.gameIsRunning = false;
-            this.playerHealth = 100;
-            this.monsterHealth = 100;
-            this.playerAttackTimeout = 4;
-            this.playerSpecialAttackTimeout = 20;
-            this.monsterAttackTimeout = 5;
+            this.player.health = 100;
+            this.monster.health = 100;
+            this.player.attackTimeout = this.defaults.playerAttackTimeout;
+            this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
+            this.monster.attackTimeout = this.defaults.monsterAttackTimeout;
           },
         },
       });
