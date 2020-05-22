@@ -408,6 +408,8 @@
             this.player.attackTimeout = this.defaults.playerAttackTimeout;
             this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
             this.player.healTimeout = this.defaults.playerHealTimeout;
+            this.player.lastDamage = 0;
+            this.monster.lastDamage = 0;
             this.monster.attackTimeout = this.defaults.monsterAttackTimeout;
           },
           hit: function (who) {
