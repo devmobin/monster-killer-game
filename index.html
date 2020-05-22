@@ -60,6 +60,9 @@
         border: 2px solid rgb(255, 55, 55);
         border-radius: 50%;
       }
+      .hit {
+        background-color: rgb(255, 101, 101);
+      }
     </style>
   </head>
   <body>
@@ -69,7 +72,7 @@
           <div class="col-sm-12 col-md-5 healthbars">
             <h2 class="mt-2 text-center">Health Bar</h2>
 
-            <div class="healthbar">
+            <div ref="playerElement" class="healthbar shadow-sm">
               <h3 class="text-center">You</h3>
               <span class="badge badge-pill badge-success"
                 >{{ player.health }}</span
@@ -86,7 +89,7 @@
               </div>
             </div>
 
-            <div class="healthbar">
+            <div ref="monsterElement" class="healthbar shadow-sm">
               <h3 class="text-center">
                 <span class="monster-attack-timeout"
                   >{{ monster.attackTimeout }}</span
@@ -208,6 +211,7 @@
             this.monster.health -= damage;
             this.player.attackTimeout = this.defaults.playerAttackTimeout;
             this.startPlayerAttacks();
+            this.hit(this.$refs.monsterElement);
 
             if (this.checkWinner()) {
               alert(`${this.turnWinner} won!!!`);
@@ -218,6 +222,7 @@
             this.monster.health -= damage;
             this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
             this.startPlayerSpecialAttacks();
+            this.hit(this.$refs.monsterElement);
 
             if (this.checkWinner()) {
               alert(`${this.turnWinner} won!!!`);
@@ -245,6 +250,7 @@
           monsterAttack: function () {
             const damage = this.calculateAmount(5, 10);
             this.player.health -= damage;
+            this.hit(this.$refs.playerElement);
 
             if (this.checkWinner()) {
               alert(`${this.turnWinner} won!!!`);
@@ -305,6 +311,13 @@
             this.player.attackTimeout = this.defaults.playerAttackTimeout;
             this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
             this.monster.attackTimeout = this.defaults.monsterAttackTimeout;
+          },
+          hit: function (who) {
+            who.classList.add('hit');
+            const counter = setInterval(() => {
+              who.classList.remove('hit');
+              clearInterval(counter);
+            }, 500);
           },
         },
       });
