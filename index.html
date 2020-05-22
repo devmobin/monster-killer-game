@@ -30,6 +30,10 @@
 
     <title>Monster Killer</title>
     <style>
+      body {
+        background-color: rgb(70, 70, 70);
+        color: white;
+      }
       .healthbar {
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -388,9 +392,8 @@
           },
           hit: function (who) {
             who.classList.add('hit');
-            const counter = setInterval(() => {
-              who.classList.remove('hit');
-              clearInterval(counter);
+            setTimeout(() => {
+              who.classList.remove('hit');              
             }, 500);
           },
         },
