@@ -60,6 +60,45 @@
         border: 2px solid rgb(255, 55, 55);
         border-radius: 50%;
       }
+      .player-attack-timeout {
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 4px;
+        padding: 3px;
+        position: absolute;
+        top: 2%;
+        left: 5%;
+        height: 25px;
+        width: 25px;
+        border: 2px solid rgb(233, 213, 39);
+        border-radius: 50%;
+      }
+      .player-special-attack-timeout {
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 4px;
+        padding: 3px;
+        position: absolute;
+        top: 2%;
+        left: 15%;
+        height: 25px;
+        width: 25px;
+        border: 2px solid rgb(248, 25, 25);
+        border-radius: 50%;
+      }
+      .player-heal-timeout {
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 4px;
+        padding: 3px;
+        position: absolute;
+        top: 2%;
+        left: 25%;
+        height: 25px;
+        width: 25px;
+        border: 2px solid rgb(13, 158, 20);
+        border-radius: 50%;
+      }
       .hit {
         background-color: rgb(255, 101, 101);
       }
@@ -73,7 +112,22 @@
             <h2 class="mt-2 text-center">Health Bar</h2>
 
             <div ref="playerElement" class="healthbar shadow-sm">
-              <h3 class="text-center">You</h3>
+              <h3 class="text-center">
+                <span
+                  v-if="!playerCanAttack && gameIsRunning"
+                  class="player-attack-timeout"
+                  >{{ player.attackTimeout }}</span
+                ><span
+                  v-if="!playerCanSpecialAttack && gameIsRunning"
+                  class="player-special-attack-timeout"
+                  >{{ player.specialAttackTimeout }}</span
+                ><span
+                  v-if="!playerCanHeal && gameIsRunning"
+                  class="player-heal-timeout"
+                  >{{ player.healTimeout }}</span
+                >
+                You
+              </h3>
               <span class="badge badge-pill badge-success"
                 >{{ player.health }}</span
               >
@@ -91,7 +145,7 @@
 
             <div ref="monsterElement" class="healthbar shadow-sm">
               <h3 class="text-center">
-                <span class="monster-attack-timeout"
+                <span v-if="gameIsRunning" class="monster-attack-timeout"
                   >{{ monster.attackTimeout }}</span
                 >
                 Monster
@@ -310,6 +364,7 @@
             this.monster.health = 100;
             this.player.attackTimeout = this.defaults.playerAttackTimeout;
             this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
+            this.player.healTimeout = this.defaults.playerHealTimeout;
             this.monster.attackTimeout = this.defaults.monsterAttackTimeout;
           },
           hit: function (who) {
