@@ -241,6 +241,14 @@
             playerSpecialAttackTimeout: 20,
             playerHealTimeout: 40,
             monsterAttackTimeout: 5,
+            minMonsterAttackDamage: 5,
+            maxMonsterAttackDamage: 10,
+            minPlayerAttackDamage: 3,
+            maxPlayerAttackDamage: 7,
+            minPlayerSpecialAttackDamage: 10,
+            maxPlayerSpecialAttackDamage: 20,
+            minPlayerHealAmount: 30,
+            maxPlayerHealAmount: 40,
           },
           player: {
             health: 100,
@@ -281,7 +289,10 @@
             this.startPlayerHealCounter();
           },
           onPlayerAttack: function () {
-            const damage = this.calculateAmount(3, 7);
+            const damage = this.calculateAmount(
+              this.defaults.minPlayerAttackDamage,
+              this.defaults.maxPlayerAttackDamage
+            );
             this.monster.health -= damage;
             this.player.lastDamage = damage;
             this.player.attackTimeout = this.defaults.playerAttackTimeout;
@@ -293,7 +304,10 @@
             }
           },
           onPlayerSpecialAttack: function () {
-            const damage = this.calculateAmount(10, 20);
+            const damage = this.calculateAmount(
+              this.defaults.minPlayerSpecialAttackDamage,
+              this.defaults.maxPlayerSpecialAttackDamage
+            );
             this.monster.health -= damage;
             this.player.lastDamage = damage;
             this.player.specialAttackTimeout = this.defaults.playerSpecialAttackTimeout;
@@ -305,7 +319,10 @@
             }
           },
           onPlayerHeal: function () {
-            const heal = this.calculateAmount(30, 40);
+            const heal = this.calculateAmount(
+              this.defaults.minPlayerHealAmount,
+              this.defaults.maxPlayerHealAmount
+            );
             this.player.health += heal;
             this.player.healTimeout = this.defaults.playerHealTimeout;
             this.startPlayerHealCounter();
@@ -324,7 +341,10 @@
             }, 1000);
           },
           monsterAttack: function () {
-            const damage = this.calculateAmount(5, 10);
+            const damage = this.calculateAmount(
+              this.defaults.minMonsterAttackDamage,
+              this.defaults.maxMonsterAttackDamage
+            );
             this.player.health -= damage;
             this.monster.lastDamage = damage;
             this.hit(this.$refs.playerElement);
@@ -393,7 +413,7 @@
           hit: function (who) {
             who.classList.add('hit');
             setTimeout(() => {
-              who.classList.remove('hit');              
+              who.classList.remove('hit');
             }, 500);
           },
         },
