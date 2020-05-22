@@ -47,6 +47,19 @@
         width: 44%;
         margin: 8px;
       }
+      .monster-attack-timeout {
+        font-size: 18px;
+        display: inline-block;
+        margin-top: 5px;
+        padding: 6px;
+        position: absolute;
+        top: 2%;
+        left: 5%;
+        height: 35px;
+        width: 35px;
+        border: 2px solid rgb(255, 55, 55);
+        border-radius: 50%;
+      }
     </style>
   </head>
   <body>
@@ -74,7 +87,12 @@
             </div>
 
             <div class="healthbar">
-              <h3 class="text-center">Monster</h3>
+              <h3 class="text-center">
+                <span class="monster-attack-timeout"
+                  >{{ monster.attackTimeout }}</span
+                >
+                Monster
+              </h3>
               <span class="badge badge-pill badge-danger"
                 >{{ monster.health }}</span
               >
